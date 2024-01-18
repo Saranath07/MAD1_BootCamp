@@ -21,7 +21,7 @@ class Movies(db.Model):
     __tablename__ = "movies"
     id = db.Column(db.Integer, primary_key = True, autoincrement = True)
     movieName = db.Column(db.String, nullable = False)
-    admin_id = db.Column(db.Integer, db.ForeignKey("user.id", ondelete='CASCADE'), nullable = False)
+    admin_id = db.Column(db.Integer, db.ForeignKey("user.id", ondelete = 'CASCADE'), nullable = False)
 
 
 with app.app_context():
@@ -77,9 +77,23 @@ def signup():
             return redirect(url_for('error'))
     return render_template("signup.html")
 
-@app.route("/addMovie")
+@app.route("/addMovie", methods = ["GET", "POST"])
 def addMovie():
-    return "Hi"
+    if request.method == "POST":
+
+        # Collect all info
+
+        # Check if user is admin
+
+        if USER.idAdmin:
+             
+             # Logic for adding movie
+            
+            return "Succes"
+        else:
+
+            # Return Error
+            return "Error"
 
 @app.route("/", methods = ["GET", "POST"])
 def index():
