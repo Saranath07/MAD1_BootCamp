@@ -88,18 +88,29 @@ def addMovie():
         if USER.idAdmin:
              
              # Logic for adding movie
+            movie = Movies(
+                movieName = request.form.get('movieName'),
+                admin_id = USER.id
+            )
+
+            db.session.add(movie)
+            db.session.commit()
             
-            return "Succes"
+            return redirect(url_for("index"))
         else:
 
             # Return Error
             return "Error"
+    return render_template("addMovie.html", name = USER.username, isAdmin = USER.idAdmin)
 
 @app.route("/", methods = ["GET", "POST"])
 def index():
 
     try:
-        return render_template("index.html", name = USER.username, isAdmin = USER.idAdmin)
+        if USER.idAdmin:
+            movies = Movies.query.filter_by(admin_id = USER.id).all()
+
+            return render_template("index.html", name = USER.username, isAdmin = USER.idAdmin, movies = movies)
     except:
         return redirect(url_for('error'))
 
@@ -107,6 +118,13 @@ def index():
 def error():
     return render_template("error.html")
 
+@app.route("/editMovie/<id>", methods = ["PUT", "GET"])
+def edit(id):
+    return f"Hello {id}"
+
+@app.route("/deleteMovie/<id>")
+def delete(id):
+    return f"Hello {id}"
 
 @app.route("/profile")
 def myPage():

@@ -7,36 +7,7 @@
 
     </head>
     <body>
-        <nav class="navbar navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
-            <div class="container-fluid">
-              <a class="navbar-brand" href="/profile">{{name}}</a>
-              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-              </button>
-              <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                  <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/">Home</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/logout">Logout</a>
-                  </li>
-                  {% if isAdmin %}
-                  <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/addMovie">Add Movie</a>
-                  </li>
-                  {% endif %}
-                  
-                  <div class="container-fluid">
-                    <form class="d-flex" role="search">
-                      <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                      <button class="btn btn-outline-success" type="submit">Search</button>
-                    </form>
-                  </div>
-              </div>
-              
-            </div>
-          </nav>
+        {% include 'navbar.html' %}
         <h1>
             This is Home Page
         </h1>
@@ -47,7 +18,25 @@
 
         {% endif %}
 
+        <!-- <li>
+            Movie 1
+        </li>
+        <li>
+            Movie 2
+        </li> -->
+        <div class="container">
+            
+        {% for movie in movies %}
 
+        <li>
+           {{movie.movieName}}
+        </li>
+        <button ><a href="/editMovie/{{movie.id}}"> Edit</a></button>
+        <button><a href="/deleteMovie/{{movie.id}}"> Delete </a></button>
+
+        {% endfor %}
+
+    </div>
 
     </body>
     
