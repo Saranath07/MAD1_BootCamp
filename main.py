@@ -118,13 +118,22 @@ def index():
 def error():
     return render_template("error.html")
 
-@app.route("/editMovie/<id>", methods = ["PUT", "GET"])
+@app.route("/editMovie/<id>", methods = ["POST", "GET"])
 def edit(id):
-    return f"Hello {id}"
+    
+    movie = Movies.query.filter_by(id = id).first()
+    if request.method == "POST":
+        movie.movieName = request.form.get("movieName")
+        db.session.commit()
+
+        return redirect("/")
+    return render_template("editMovie.html", name = USER.username, isAdmin = USER.idAdmin)
 
 @app.route("/deleteMovie/<id>")
 def delete(id):
-    return f"Hello {id}"
+    movie = Movies.query.filter_by(id = id).first()
+    db.session.delete(movie)
+    db.session.commit()
 
 @app.route("/profile")
 def myPage():
