@@ -17,6 +17,13 @@ class User(db.Model):
     password = db.Column(db.String, nullable = False)
     idAdmin = db.Column(db.Boolean, default = False)
 
+class Movies(db.Model):
+    __tablename__ = "movies"
+    id = db.Column(db.Integer, primary_key = True, autoincrement = True)
+    movieName = db.Column(db.String, nullable = False)
+    admin_id = db.Column(db.Integer, db.ForeignKey("user.id", ondelete='CASCADE'), nullable = False)
+
+
 with app.app_context():
     db.create_all()
 
@@ -70,11 +77,15 @@ def signup():
             return redirect(url_for('error'))
     return render_template("signup.html")
 
+@app.route("/addMovie")
+def addMovie():
+    return "Hi"
+
 @app.route("/", methods = ["GET", "POST"])
 def index():
 
     try:
-        return render_template("index.html", name = USER.username)
+        return render_template("index.html", name = USER.username, isAdmin = USER.idAdmin)
     except:
         return redirect(url_for('error'))
 
@@ -83,9 +94,9 @@ def error():
     return render_template("error.html")
 
 
-@app.route("/myPage")
+@app.route("/profile")
 def myPage():
-    return render_template("myPage.html")
+    return render_template("myPage.html", name = USER.username)
 
 if __name__ == "__main__":
     app.run(

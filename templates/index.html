@@ -9,15 +9,23 @@
     <body>
         <nav class="navbar navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
             <div class="container-fluid">
-              <a class="navbar-brand" href="#">{{name}}</a>
+              <a class="navbar-brand" href="/profile">{{name}}</a>
               <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
               </button>
               <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                   <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/profile">Profile</a>
+                    <a class="nav-link active" aria-current="page" href="/">Home</a>
                   </li>
+                  <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="/logout">Logout</a>
+                  </li>
+                  {% if isAdmin %}
+                  <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="/addMovie">Add Movie</a>
+                  </li>
+                  {% endif %}
                   
                   <div class="container-fluid">
                     <form class="d-flex" role="search">
@@ -30,19 +38,17 @@
             </div>
           </nav>
         <h1>
-            This is my page
+            This is Home Page
         </h1>
 
-        
+        {% if isAdmin %}
+
+        <h1>You are an Admin</h1>
+
+        {% endif %}
 
 
-        Hello everyone, It's me <h3>{{name}}</h3>
-        <a href="/myPage">Move to my page</a>
 
     </body>
-    <footer>
-        <br>
-        <br>
-        <a href="/logout">Logout</a>
-    </footer>
+    
 </html>
