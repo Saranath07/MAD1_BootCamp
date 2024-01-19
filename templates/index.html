@@ -31,8 +31,27 @@
         <li>
            {{movie.movieName}}
         </li>
+        {% if isAdmin %}
         <button ><a href="/editMovie/{{movie.id}}"> Edit</a></button>
         <button><a href="/deleteMovie/{{movie.id}}"> Delete </a></button>
+        {% endif %}
+
+        {% endfor %}
+
+    </div>
+    <br>
+    <br>
+    <br>
+    <div class="container">
+            
+        {% for theatre in theatres %}
+
+        <li>
+           {{theatre.theatreName}}
+        </li>
+        {% if isAdmin %}
+        <button ><a href="/editTheatre/{{theatre.id}}"> Edit</a></button>
+        {% endif %}
 
         {% endfor %}
 

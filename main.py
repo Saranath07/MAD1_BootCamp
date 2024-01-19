@@ -23,6 +23,17 @@ class Movies(db.Model):
     movieName = db.Column(db.String, nullable = False)
     admin_id = db.Column(db.Integer, db.ForeignKey("user.id", ondelete = 'CASCADE'), nullable = False)
 
+class Theatres(db.Model):
+    __tablename__ = "theatres"
+    id = db.Column(db.Integer, primary_key = True, autoincrement = True)
+    theatreName = db.Column(db.String, nullable = False)
+    admin_id = db.Column(db.Integer, db.ForeignKey("user.id", ondelete = 'CASCADE'), nullable = False)
+
+class Shows(db.Model):
+    __tablename__ = "shows"
+    id = db.Column(db.Integer, primary_key = True, autoincrement = True)
+    movieId = db.Column(db.Integer, db.ForeignKey("movies.id", ondelete = 'CASCADE'), nullable = False)
+    theatreId = db.Column(db.Integer, db.ForeignKey("theatres.id", ondelete = 'CASCADE'), nullable = False)
 
 with app.app_context():
     db.create_all()
@@ -103,16 +114,49 @@ def addMovie():
             return "Error"
     return render_template("addMovie.html", name = USER.username, isAdmin = USER.idAdmin)
 
+@app.route("/addTheatre", methods = ["GET", "POST"])
+def addTheatre():
+    if request.method == "POST":
+
+        # Collect all info
+
+        # Check if user is admin
+
+        if USER.idAdmin:
+             
+             # Logic for adding movie
+            theatre = Theatres(
+                theatreName = request.form.get('name'),
+                admin_id = USER.id
+            )
+
+            db.session.add(theatre)
+            db.session.commit()
+            
+            return redirect(url_for("index"))
+        else:
+
+            # Return Error
+            return "Error"
+    return render_template("addTheatre.html", name = USER.username, isAdmin = USER.idAdmin)
+
 @app.route("/", methods = ["GET", "POST"])
 def index():
 
     try:
+        movies = []
+        theatres = []
         if USER.idAdmin:
             movies = Movies.query.filter_by(admin_id = USER.id).all()
-
-            return render_template("index.html", name = USER.username, isAdmin = USER.idAdmin, movies = movies)
+            theatres = Theatres.query.filter_by(admin_id = USER.id).all()
+        
+        else:
+            movies = Movies.query.all()
+            theatres = Theatres.query.all()
+        return render_template("index.html", name = USER.username, isAdmin = USER.idAdmin, movies = movies,
+                               theatres = theatres)
     except:
-        return redirect(url_for('error'))
+        return redirect(url_for('login'))
 
 @app.route("/error")
 def error():
@@ -129,11 +173,43 @@ def edit(id):
         return redirect("/")
     return render_template("editMovie.html", name = USER.username, isAdmin = USER.idAdmin)
 
+@app.route("/editTheatre/<id>", methods = ["POST", "GET"])
+def editTheatre(id):
+    
+    theatre = Theatres.query.filter_by(id = id).first()
+    if request.method == "POST":
+        theatreName = request.form.get("theatreName")
+        movieID = request.form.get("movieID")
+        theatre = Theatres.query.filter_by(id = id).first()
+        if theatreName:
+            theatre.theatreName = theatreName
+        movie = Movies.query.filter_by(id = movieID).first()
+        show = Shows(
+            movieId = movieID,
+            theatreId = theatre.id
+        )
+        db.session.add(show)
+        db.session.commit()
+
+        return redirect("/")
+    return render_template("editTheatre.html", name = USER.username, isAdmin = USER.idAdmin, theatre = theatre)
+
 @app.route("/deleteMovie/<id>")
 def delete(id):
     movie = Movies.query.filter_by(id = id).first()
     db.session.delete(movie)
     db.session.commit()
+    return redirect("/")
+
+@app.route("/shows/<id>")
+def show(id):
+
+    shows = Shows.query.filter_by(movie_id = id).all()
+    theatres = []
+    for show in shows:
+        theatre = Theatres.query.filter_by(id = show.theatr_id).first()
+        theatres.append(theatre)
+
 
 @app.route("/profile")
 def myPage():
