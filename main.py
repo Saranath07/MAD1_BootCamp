@@ -1,7 +1,10 @@
 from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
+from flask_restful import Resource, Api, fields, marshal_with, reqparse
 
 app = Flask(__name__)
+
+api = Api(app)
 
 
 USER = None
@@ -215,6 +218,55 @@ def show(id):
 def myPage():
     return render_template("myPage.html", name = USER.username)
 
+
+class UserAPI(Resource):
+
+    def get(self, user_id):
+
+        try:
+            user = User.query.filter_by(id = user_id).first()
+
+            if user:
+
+                return {
+                    "id" : user.id,
+                    "mail" : user.email,
+                    "username" : user.username,
+                    "isAdmin" : user.idAdmin
+                }, 200
+            else:
+                return {
+                    "error" : "User does not exist"
+                }, 403
+            
+        except:
+            return {
+                "error" : "Something went wrong"
+            }, 404
+
+    def post(self):
+
+        data = request.get_json()
+
+        user = User(
+            email = data['email'],
+            username = data['username'],
+            password = data['password'],
+            idAdmin = 0
+        )
+
+        db.session.add(user)
+        db.session.commit()
+
+        return {
+            "message" : "User Registered Successfully"
+        }, 200
+
+
+
+api.add_resource(UserAPI, "/api/user/<user_id>", "/api/user")
+
+
 if __name__ == "__main__":
     app.run(
         debug = True
@@ -222,7 +274,9 @@ if __name__ == "__main__":
 
 
 
-
+# 200 - 299 : Sucess
+# 400 - 499 : Error
+# 500 +     : HTTP Error / No internet
 
 
 
