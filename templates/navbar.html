@@ -22,9 +22,15 @@
           {% endif %}
           
           <div class="container-fluid">
-            <form class="d-flex" role="search">
-              <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+            <form class="d-flex" role="search" action="/search" method="GET">
+              <input name="query" class="form-control me-2" type="search" placeholder="Search Movie" aria-label="Search">
               <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+          </div>
+          <div class="container-fluid">
+            <form class="d-flex" role="search" action="/searchTheatres" method="GET">
+              <input name="query" class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+              <button class="btn btn-outline-success" type="submit">Search Theatres</button>
             </form>
           </div>
       </div>
